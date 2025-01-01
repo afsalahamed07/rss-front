@@ -1,0 +1,7 @@
+.item {
+  @apply flex flex-col gap-2 p-4;
+}
+
+.title {
+  @apply font-bold text-2xl;
+}
