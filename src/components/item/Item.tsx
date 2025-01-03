@@ -19,14 +19,15 @@ const Item: React.FC<ItemType> = ({
     firstParagraph?.textContent ?? "Default content";
 
   return (
-    <a href={link} target="_blank">
-      <div className="item">
-        <h2 className="title">{title}</h2> <p className="author">{author}</p>
-        <div className="description">{paragraphContent}</div>
-        <div className="subject">{subject}</div>
-        <div className="date">{date}</div>
-      </div>
-    </a>
+    <div className="item">
+      <h2 className="title">{title}</h2> <p className="author">{author}</p>
+      <div className="description">{paragraphContent}</div>
+      <div className="subject">{subject}</div>
+      <div className="date">Published on: {date.toString()}</div>
+      <a className="link" href={link} target="_blank">
+        Read more..
+      </a>
+    </div>
   );
 };
 

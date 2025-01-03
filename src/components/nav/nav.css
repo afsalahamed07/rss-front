@@ -1,0 +1,10 @@
+.navbar {
+  @apply flex gap-4 place-content-between py-2 px-8 bg-[#56949f]
+  sticky top-0;
+}
+
+.nav-item {
+  @apply font-maple-regular font-bold text-xl 
+  px-4 py-2 rounded-lg
+  transition-all ease-in-out hover:bg-[#9ccfd8];
+}

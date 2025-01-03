@@ -20,7 +20,8 @@ export async function fetchFeed() {
       const author = item.querySelector("author")?.textContent;
       const description = item.querySelector("description")?.textContent;
       const subject = item.querySelector("subject")?.textContent;
-      const date = item.querySelector("date")?.textContent;
+      const dateString = item.querySelector("date")?.textContent;
+      const date = dateString ? dateParser(dateString.trim()) : Date.now();
       const link = item.querySelector("link")?.textContent;
 
       itemsList.push({ title, author, description, subject, date, link });
@@ -30,4 +31,16 @@ export async function fetchFeed() {
   } catch (error) {
     console.log("Error fetching or parsing the feed: ", error);
   }
+}
+
+function dateParser(dateString: string) {
+  const date = new Date(dateString);
+
+  const formattedDate = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+
+  return formattedDate;
 }

@@ -1,0 +1,19 @@
+.item {
+  @apply flex flex-col gap-2 p-4 m-4 shadow-sm rounded-lg font-maple-regular;
+}
+
+.title {
+  @apply font-bold text-2xl text-[#b4637a];
+}
+
+.subject {
+  @apply text-gray-500;
+}
+
+.description {
+  @apply text-lg;
+}
+
+.link {
+  @apply text-[#286983];
+}

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import Item from "./components/Item";
-import { Item as ItemType } from "./types/Item";
-import { fetchFeed } from "./script";
-import { parseDescription } from "./types/Item";
-import { cleanHtml } from "./util/parser";
+import Item from "../item/Item";
+import { Item as ItemType } from "../../types/Item";
+import { fetchFeed } from "../../script";
+import { parseDescription } from "../../types/Item";
+import { cleanHtml } from "../../util/parser";
 
 function App() {
   const [data, setData] = useState<ItemType[]>([]);
@@ -23,12 +23,10 @@ function App() {
 
   return (
     <div className="container mx-auto">
-      <div className="container mx-auto">
-        {data.map((item) => (
-          // WARN: The key is utter bullshit
-          <Item key={item.title} {...parseDescription(item, cleanHtml)} />
-        ))}
-      </div>
+      {data.map((item) => (
+        // WARN: The key is utter bullshit
+        <Item key={item.title} {...parseDescription(item, cleanHtml)} />
+      ))}
     </div>
   );
 }

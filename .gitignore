@@ -27,3 +27,4 @@ bun.lockb
 eslint.config.js
 public/vite.svg
 src/assets/react.svg
+src/assets

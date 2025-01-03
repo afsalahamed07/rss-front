@@ -1,0 +1,23 @@
+.rss {
+  @apply container mx-auto font-maple-regular;
+}
+
+.rss-input {
+  @apply flex flex-col gap-2 p-4;
+
+  label {
+    @apply text-lg;
+  }
+
+  input {
+    @apply border py-2 px-4 rounded-lg;
+  }
+}
+
+.rss-btn {
+  @apply flex justify-center;
+  button {
+    @apply bg-[#ea9a97] hover:bg-[#ebbcba] px-4 py-2 rounded-lg font-bold text-lg
+    transition-all ease-in-out;
+  }
+}
