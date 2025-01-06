@@ -21,3 +21,19 @@
     transition-all ease-in-out;
   }
 }
+
+.rss-info {
+  @apply flex py-2 px-4 text-lg;
+}
+
+.rss-info.odd {
+  @apply bg-[#6e6a86]/50;
+}
+
+.rss-info.even {
+  @apply bg-[#6e6a86]/75;
+}
+
+.rss-title {
+  @apply basis-1/4;
+}

@@ -1,19 +1,37 @@
 import { useEffect, useState } from "react";
 import "./rss.css";
-import { aw } from "vitest/dist/chunks/reporters.D7Jzd9GS.js";
-const Rss = () => {
-  const [feed, setFeed] = useState("");
 
-  function postFeed() {
-    fetch("http://localhost:3000/rss", {
+type RSS = {
+  id: number;
+  title: string;
+  link: string;
+};
+
+const Rss = () => {
+  const [feedLink, setFeedLink] = useState("");
+  const [errorStatus, setErrorStatus] = useState(false);
+  const [rssList, setRssList] = useState<RSS[]>([]);
+
+  async function postFeed() {
+    const result = await fetch("http://localhost:3000/rss", {
       method: "POST",
       body: JSON.stringify({
-        link: feed,
+        link: feedLink,
       }),
       headers: {
         "Content-type": "application/json; charset=UTF-8",
       },
     });
+
+    if (result.status == 409) {
+      setErrorStatus(true);
+      return;
+    }
+
+    setErrorStatus(false);
+    const response = await result.json();
+
+    return response;
   }
 
   async function getFeed() {
@@ -30,7 +48,8 @@ const Rss = () => {
 
   useEffect(() => {
     const feed = async () => {
-      console.log(await getFeed());
+      const result = await getFeed();
+      setRssList(result);
     };
 
     feed();
@@ -42,14 +61,31 @@ const Rss = () => {
         <label>RSS Feed: </label>
         <input
           placeholder="ex: https://alistapart.com/main/feed/"
-          value={feed}
-          onChange={(event) => setFeed(event.target.value)}
+          value={feedLink}
+          onChange={(event) => setFeedLink(event.target.value)}
         />
       </div>
-
+      {errorStatus && (
+        <div className="insert-status-error">Feed Already Exist</div>
+      )}
       <div className="rss-btn">
         <button onClick={postFeed}>Enter Feed</button>
       </div>
+
+      <div className="rss-info odd font-bold mt-6">
+        <div className="rss-title">Domain</div>
+        <div className="rss-link">URL</div>
+      </div>
+
+      {rssList.map((rss, index) => (
+        <div
+          key={rss.id}
+          className={`rss-info ${index % 2 == 0 ? "even" : "odd"}`}
+        >
+          <div className="rss-title">{rss.title}</div>
+          <div className="rss-link">{rss.link}</div>
+        </div>
+      ))}
     </div>
   );
 };
