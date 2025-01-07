@@ -23,9 +23,9 @@ function App() {
 
   return (
     <div className="container mx-auto">
-      {data.map((item) => (
+      {data.map((item, index) => (
         // WARN: The key is utter bullshit
-        <Item key={item.title} {...parseDescription(item, cleanHtml)} />
+        <Item key={index} {...parseDescription(item, cleanHtml)} />
       ))}
     </div>
   );

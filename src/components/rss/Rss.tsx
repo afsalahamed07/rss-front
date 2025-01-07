@@ -11,6 +11,7 @@ const Rss = () => {
   const [feedLink, setFeedLink] = useState("");
   const [errorStatus, setErrorStatus] = useState(false);
   const [rssList, setRssList] = useState<RSS[]>([]);
+  const [postMsg, setPostMsg] = useState("");
 
   async function postFeed() {
     const result = await fetch("http://localhost:3000/rss", {
@@ -23,13 +24,15 @@ const Rss = () => {
       },
     });
 
-    if (result.status == 409) {
+    const response = await result.json();
+
+    if (!result.ok) {
       setErrorStatus(true);
+      setPostMsg(await response.msg);
       return;
     }
 
     setErrorStatus(false);
-    const response = await result.json();
 
     return response;
   }
@@ -65,9 +68,7 @@ const Rss = () => {
           onChange={(event) => setFeedLink(event.target.value)}
         />
       </div>
-      {errorStatus && (
-        <div className="insert-status-error">Feed Already Exist</div>
-      )}
+      {errorStatus && <div className="insert-status-error">{postMsg}</div>}
       <div className="rss-btn">
         <button onClick={postFeed}>Enter Feed</button>
       </div>
