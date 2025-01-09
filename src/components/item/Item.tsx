@@ -12,11 +12,12 @@ const Item: React.FC<ItemType> = ({
 }) => {
   // TODO: Move this to different module
   // possibley the parer module
+
+  // :descriptionParsing
   const parser = new DOMParser();
   const doc = parser.parseFromString(description, "text/html");
   const firstParagraph: HTMLElement | null = doc.querySelector("p");
-  const paragraphContent: string =
-    firstParagraph?.textContent ?? "Default content";
+  const paragraphContent: string = firstParagraph?.textContent ?? description;
 
   return (
     <div className="item">
