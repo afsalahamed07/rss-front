@@ -7,18 +7,21 @@ export default {
     },
     extend: {
       colors: {
-        background: "#000000", // True black
-        surface: "#1a1a1a", // Secondary background
-        overlay: "#262626", // Tertiary background
-        primary: "#ffffff", // Primary text
-        muted: "#8c8c8c", // Muted secondary text
-        heading: "#d4a5a5", // Headings and prominent text
-        accent: "#68a5f1", // Accent for buttons
-        hover: "#4c82d1", // Hover state for buttons
-        border: "#333333", // Borders and dividers
-        link: "#c9a4f7", // Links
-        success: "#4caf50", // Success messages
-        error: "#f44336", // Error messages
+        base: "#191724", // Primary background
+        surface: "#1f1d2e", // Secondary background
+        overlay: "#26233a", // Tertiary background
+        muted: "#6e6a86", // Low contrast foreground
+        subtle: "#908caa", // Medium contrast foreground
+        text: "#e0def4", // High contrast foreground
+        love: "#eb6f92", // Errors, deletions
+        gold: "#f6c177", // Warnings, strings
+        rose: "#ebbcba", // Modified files
+        pine: "#3178c6", // Renamed files, keywords
+        foam: "#9ccfd8", // Information, additions
+        iris: "#c4a7e7", // Hints, links
+        highlightLow: "#21202e", // Cursor line background
+        highlightMed: "#403d52", // Selection background
+        highlightHigh: "#524f67", // Borders, cursor background
       },
     },
   },

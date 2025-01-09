@@ -10,14 +10,14 @@
   }
 
   input {
-    @apply border py-2 px-4 rounded-lg;
+    @apply border border-iris py-2 px-4 rounded-lg bg-surface;
   }
 }
 
 .rss-btn {
   @apply flex justify-center;
   button {
-    @apply bg-[#ea9a97] hover:bg-[#ebbcba] px-4 py-2 rounded-lg font-bold text-lg
+    @apply bg-surface hover:bg-overlay px-4 py-2 rounded-lg font-bold text-lg
     transition-all ease-in-out;
   }
 }
@@ -27,11 +27,11 @@
 }
 
 .rss-info.odd {
-  @apply bg-[#6e6a86]/50;
+  @apply bg-iris/25;
 }
 
 .rss-info.even {
-  @apply bg-[#6e6a86]/75;
+  @apply bg-iris/10;
 }
 
 .rss-title {

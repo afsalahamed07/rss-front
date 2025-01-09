@@ -1,5 +1,5 @@
 .item {
-  @apply flex flex-col gap-2 p-4 m-4 shadow-sm rounded-lg font-maple-regular;
+  @apply flex flex-col gap-2 p-4 m-4 font-maple-regular border-iris border-b-2;
 }
 
 .title {
@@ -15,5 +15,5 @@
 }
 
 .link {
-  @apply text-link;
+  @apply text-pine;
 }
