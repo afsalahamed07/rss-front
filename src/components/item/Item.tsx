@@ -1,5 +1,5 @@
 import React from "react";
-import { Item as ItemType } from "../types/Item";
+import { Item as ItemType } from "../../types/Item.ts";
 import "./item.css";
 
 const Item: React.FC<ItemType> = ({

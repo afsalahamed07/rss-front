@@ -3,11 +3,11 @@
 }
 
 .title {
-  @apply font-bold text-2xl text-[#b4637a];
+  @apply font-bold text-2xl;
 }
 
 .subject {
-  @apply text-gray-500;
+  @apply text-muted;
 }
 
 .description {
@@ -15,5 +15,5 @@
 }
 
 .link {
-  @apply text-[#286983];
+  @apply text-link;
 }

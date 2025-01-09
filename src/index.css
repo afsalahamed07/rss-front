@@ -25,3 +25,13 @@
     src: url(./assets/maple/MapleMono-Bold.woff2) format("woff2");
   }
 }
+
+body {
+  @apply bg-background text-primary;
+}
+
+h1,
+h2,
+h3 {
+  @apply text-heading;
+}
