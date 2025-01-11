@@ -1,29 +1,39 @@
 import { useEffect, useState } from "react";
 import Item from "../item/Item";
 import { Item as ItemType } from "../../types/Item";
-import { fetchFeed } from "../../script";
+import { fetchRSSData, parsRawData } from "../../script";
 import { parseDescription } from "../../types/Item";
 import { cleanHtml } from "../../util/parser";
+import { EventEmitter } from "../../util/EventEmmiter";
+import { Queue } from "../../types/Queue";
+import { Data } from "../../types/Data";
+
+const eventEmitter = new EventEmitter();
+const rawDataQueue = new Queue<Data>(eventEmitter);
 
 function App() {
-  const [data, setData] = useState<ItemType[]>([]);
+  const [parsedData, setParsedData] = useState<ItemType[]>([]);
+
+  function updateParsedData(item: ItemType) {
+    setParsedData((prevData: ItemType[]) => [...prevData, item]);
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await fetchFeed();
-        setData(result);
-      } catch (error) {
-        console.log(error);
-      }
+    const processQueue = async () => {
+      parsRawData(rawDataQueue, updateParsedData);
     };
+    eventEmitter.on("queueUpdated", processQueue);
 
-    fetchData();
+    fetchRSSData(rawDataQueue);
+
+    return () => {
+      eventEmitter.off("queueUpdated", processQueue);
+    };
   }, []);
 
   return (
     <div className="container mx-auto">
-      {data.map((item, index) => (
+      {parsedData.map((item: ItemType, index: number) => (
         // WARN: The key is utter bullshit
         <Item key={index} {...parseDescription(item, cleanHtml)} />
       ))}
