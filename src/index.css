@@ -26,6 +26,10 @@
   }
 }
 
+::selection {
+  @apply bg-highlightHigh;
+}
+
 body {
   @apply bg-base text-text;
 }
