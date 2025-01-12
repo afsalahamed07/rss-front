@@ -22,7 +22,11 @@ export async function fetchRSSData(dataQueue: Queue<Data>) {
     return;
   }
 
-  const reader = response.body?.getReader();
+  if (!response.body) {
+    return;
+  }
+
+  const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let partialData = "";
 
@@ -37,11 +41,13 @@ export async function fetchRSSData(dataQueue: Queue<Data>) {
       dataQueue.enqueue(data);
       partialData = "";
     } catch (err) {
-      console.log("Error occured during the parsing of data", err);
+      console.error("Errror occured whiel parsing data ", err);
     }
   }
 }
 
+// BUG: the date parsing not working as expected for some feeds
+// due to different date approch, structuring of the feed
 export async function parsRawData(
   dataQueue: Queue<Data>,
   updateParsedData: (item: Item) => void,
@@ -49,23 +55,46 @@ export async function parsRawData(
   while (!dataQueue.isEmpty()) {
     try {
       const data = dataQueue.dequeue();
+
+      if (!data) {
+        console.warn("No data available", data);
+        return;
+      }
+
       const parser = new DOMParser(); // Built-in browser utility to parse XML
-      const xmlDoc = parser.parseFromString(data?.data, "application/xml");
+      const xmlDoc = parser.parseFromString(data.data, "application/xml");
       const items = xmlDoc.querySelectorAll("item");
 
       items.forEach((itemElement) => {
-        const title = itemElement.querySelector("title")?.textContent;
-        const author = itemElement.querySelector("author")?.textContent;
+        const title =
+          itemElement.querySelector("title")?.textContent ?? "No title";
+        const author =
+          itemElement.querySelector("author")?.textContent ?? "No Author";
         const description =
-          itemElement.querySelector("description")?.textContent;
-        const subject = itemElement.querySelector("subject")?.textContent;
-        const dateString = itemElement.querySelector("date")?.textContent;
-        // BUG: the date parsing not working as expected for some feeds
-        // due to different date approch
-        const date = dateString ? dateParser(dateString.trim()) : Date.now();
-        const link = itemElement.querySelector("link")?.textContent;
+          itemElement.querySelector("description")?.textContent ??
+          "No description";
 
-        // TODO: fix this type non-sense
+        const subjectElements = itemElement.querySelectorAll("subject");
+        const subject: string[] = Array.from(subjectElements)
+          .map((element) => element.textContent?.trim())
+          .filter((text): text is string => !!text); // Filter out null/undefined values
+
+        const dateString = itemElement.querySelector("date")?.textContent;
+        let date: Date;
+        try {
+          // Use a custom date parser or default to the current date
+          date = dateString
+            ? new Date(dateParser(dateString.trim()))
+            : new Date();
+        } catch {
+          console.error(
+            `Invalid date: ${dateString}, defaulting to current date`,
+          );
+          date = new Date();
+        }
+        const link =
+          itemElement.querySelector("link")?.textContent ?? "No link";
+
         const item: Item = { title, author, description, subject, date, link };
         updateParsedData(item);
       });
