@@ -87,6 +87,7 @@ export async function parsRawDataWithRssParser(
 
       const subject = entry.categories ?? entry.subject ?? ["No categories"];
       const dateString = entry.pubDate;
+      const domain = entry.domain;
       let date: Date;
       try {
         // Use a custom date parser or default to the current date
@@ -108,7 +109,7 @@ export async function parsRawDataWithRssParser(
         subject,
         date,
         link,
-        domain: "Still no",
+        domain,
       };
       updateParsedData(item);
     } catch (error) {

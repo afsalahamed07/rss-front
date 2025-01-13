@@ -10,6 +10,7 @@ export type FeedItem = {
   isoDate: string;
   subject?: string[];
   author?: string;
+  domain: string;
 };
 
 export type Feed = {
