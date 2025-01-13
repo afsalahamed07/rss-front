@@ -49,6 +49,19 @@ const Rss = () => {
     return data;
   }
 
+  async function handleDelete(rssId: number) {
+    try {
+      fetch(`http://localhost:3000/rss/${rssId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-type": "application/json, charset=UTF-8",
+        },
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     const feed = async () => {
       const result = await getFeed();
@@ -81,10 +94,14 @@ const Rss = () => {
       {rssList.map((rss, index) => (
         <div
           key={rss.id}
+          id={rss.id.toString()}
           className={`rss-info ${index % 2 == 0 ? "even" : "odd"}`}
         >
           <div className="rss-title">{rss.title}</div>
           <div className="rss-link">{rss.link}</div>
+          <button onClick={() => handleDelete(rss.id)} className="delete-btn">
+            Delete
+          </button>
         </div>
       ))}
     </div>

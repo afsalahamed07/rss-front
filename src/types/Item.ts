@@ -5,6 +5,7 @@ export type Item = {
   subject: string[];
   date: Date;
   link: string;
+  domain: string;
 };
 
 export function parseDescription(

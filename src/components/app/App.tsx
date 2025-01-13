@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import Item from "../item/Item";
 import { Item as ItemType } from "../../types/Item";
-import { fetchRSSData, parsRawData } from "../../script";
+import {
+  fetchRSSData,
+  parsRawData,
+  parsRawDataWithRssParser,
+} from "../../script";
 import { parseDescription } from "../../types/Item";
 import { cleanHtml } from "../../util/parser";
 import { EventEmitter } from "../../util/EventEmmiter";
@@ -20,7 +24,8 @@ function App() {
 
   useEffect(() => {
     const processQueue = async () => {
-      parsRawData(rawDataQueue, updateParsedData);
+      // parsRawData(rawDataQueue, updateParsedData);
+      parsRawDataWithRssParser(rawDataQueue, updateParsedData);
     };
     eventEmitter.on("queueUpdated", processQueue);
 

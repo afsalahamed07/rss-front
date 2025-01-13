@@ -1,6 +1,7 @@
 import { Data } from "./types/Data";
 import { Item } from "./types/Item";
 import { Queue } from "./types/Queue";
+import Parser from "rss-parser";
 
 function dateParser(dateString: string) {
   const date = new Date(dateString);
@@ -46,9 +47,7 @@ export async function fetchRSSData(dataQueue: Queue<Data>) {
   }
 }
 
-// BUG: the date parsing not working as expected for some feeds
-// due to different date approch, structuring of the feed
-export async function parsRawData(
+export async function parsRawDataWithRssParser(
   dataQueue: Queue<Data>,
   updateParsedData: (item: Item) => void,
 ) {
@@ -56,30 +55,22 @@ export async function parsRawData(
     try {
       const data = dataQueue.dequeue();
 
+      console.info(data);
+
       if (!data) {
         console.warn("No data available", data);
         return;
       }
 
-      const parser = new DOMParser(); // Built-in browser utility to parse XML
-      const xmlDoc = parser.parseFromString(data.data, "application/xml");
-      const items = xmlDoc.querySelectorAll("item");
+      const feed = data.feed;
+      const domain = feed.title;
+      feed.items.forEach((entry) => {
+        const title = entry.title ?? "No title";
+        const author = entry.creator ?? entry.author ?? "No author";
+        const description = entry.content ?? "No description";
 
-      items.forEach((itemElement) => {
-        const title =
-          itemElement.querySelector("title")?.textContent ?? "No title";
-        const author =
-          itemElement.querySelector("author")?.textContent ?? "No Author";
-        const description =
-          itemElement.querySelector("description")?.textContent ??
-          "No description";
-
-        const subjectElements = itemElement.querySelectorAll("subject");
-        const subject: string[] = Array.from(subjectElements)
-          .map((element) => element.textContent?.trim())
-          .filter((text): text is string => !!text); // Filter out null/undefined values
-
-        const dateString = itemElement.querySelector("date")?.textContent;
+        const subject = entry.categories ?? entry.subject ?? ["No categories"];
+        const dateString = entry.pubDate;
         let date: Date;
         try {
           // Use a custom date parser or default to the current date
@@ -92,10 +83,17 @@ export async function parsRawData(
           );
           date = new Date();
         }
-        const link =
-          itemElement.querySelector("link")?.textContent ?? "No link";
+        const link = entry.link ?? "No link";
 
-        const item: Item = { title, author, description, subject, date, link };
+        const item: Item = {
+          title,
+          author,
+          description,
+          subject,
+          date,
+          link,
+          domain,
+        };
         updateParsedData(item);
       });
     } catch (error) {

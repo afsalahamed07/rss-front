@@ -9,6 +9,7 @@ const Item: React.FC<ItemType> = ({
   subject,
   date,
   link,
+  domain,
 }) => {
   // TODO: Move this to different module
   // possibley the parer module
@@ -21,7 +22,10 @@ const Item: React.FC<ItemType> = ({
 
   return (
     <div className="item">
-      <h2 className="title">{title}</h2> <p className="author">{author}</p>
+      <h2 className="title">{title}</h2>
+      <p className="author">
+        {author} | {domain}
+      </p>
       <div className="description">{paragraphContent}</div>
       <div className="subject">{subject}</div>
       <div className="date">Published on: {date.toString()}</div>
