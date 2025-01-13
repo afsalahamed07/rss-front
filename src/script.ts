@@ -1,7 +1,6 @@
-import { Data } from "./types/Data";
+import { Data, FeedItem } from "./types/Data";
 import { Item } from "./types/Item";
 import { Queue } from "./types/Queue";
-import Parser from "rss-parser";
 
 function dateParser(dateString: string) {
   const date = new Date(dateString);
@@ -36,13 +35,34 @@ export async function fetchRSSData(dataQueue: Queue<Data>) {
     if (done) break;
 
     partialData += decoder.decode(value, { stream: true });
+    const lines = partialData.split("\n");
 
+    for (let i = 0; i < lines.length - 1; i++) {
+      const line = lines[i].trim();
+      if (!line) continue; // skip empty lines
+      try {
+        const parsed = JSON.parse(line);
+        dataQueue.enqueue(parsed);
+      } catch (err) {
+        console.error("Failed to parse line:", err, line);
+      }
+    }
+
+    // Keep the final (possibly partial) line for the next chunk
+    // this is sort eh resetting the partialData, the last linte is empty
+    // due the new line split or a partial item
+    partialData = lines[lines.length - 1];
+  }
+
+  // If there's leftover after the loop ends, try parsing it
+  // this should be empty ideally
+  const leftover = partialData.trim();
+  if (leftover) {
     try {
-      const data = JSON.parse(partialData);
-      dataQueue.enqueue(data);
-      partialData = "";
+      const parsed = JSON.parse(leftover);
+      dataQueue.enqueue(parsed);
     } catch (err) {
-      console.error("Errror occured whiel parsing data ", err);
+      console.error("Failed to parse leftover:", err, leftover);
     }
   }
 }
@@ -55,47 +75,42 @@ export async function parsRawDataWithRssParser(
     try {
       const data = dataQueue.dequeue();
 
-      console.info(data);
-
       if (!data) {
         console.warn("No data available", data);
         return;
       }
 
-      const feed = data.feed;
-      const domain = feed.title;
-      feed.items.forEach((entry) => {
-        const title = entry.title ?? "No title";
-        const author = entry.creator ?? entry.author ?? "No author";
-        const description = entry.content ?? "No description";
+      const entry: FeedItem = JSON.parse(data.item);
+      const title = entry.title ?? "No title";
+      const author = entry.creator ?? entry.author ?? "No author";
+      const description = entry.content ?? "No description";
 
-        const subject = entry.categories ?? entry.subject ?? ["No categories"];
-        const dateString = entry.pubDate;
-        let date: Date;
-        try {
-          // Use a custom date parser or default to the current date
-          date = dateString
-            ? new Date(dateParser(dateString.trim()))
-            : new Date();
-        } catch {
-          console.error(
-            `Invalid date: ${dateString}, defaulting to current date`,
-          );
-          date = new Date();
-        }
-        const link = entry.link ?? "No link";
+      const subject = entry.categories ?? entry.subject ?? ["No categories"];
+      const dateString = entry.pubDate;
+      let date: Date;
+      try {
+        // Use a custom date parser or default to the current date
+        date = dateString
+          ? new Date(dateParser(dateString.trim()))
+          : new Date();
+      } catch {
+        console.error(
+          `Invalid date: ${dateString}, defaulting to current date`,
+        );
+        date = new Date();
+      }
+      const link = entry.link ?? "No link";
 
-        const item: Item = {
-          title,
-          author,
-          description,
-          subject,
-          date,
-          link,
-          domain,
-        };
-        updateParsedData(item);
-      });
+      const item: Item = {
+        title,
+        author,
+        description,
+        subject,
+        date,
+        link,
+        domain: "Still no",
+      };
+      updateParsedData(item);
     } catch (error) {
       console.log("Error occured", error);
     }

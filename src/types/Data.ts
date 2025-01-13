@@ -1,6 +1,4 @@
-import { Item } from "./Item";
-
-type FeedItem = {
+export type FeedItem = {
   title: string;
   link: string;
   pubDate: string;
@@ -14,7 +12,7 @@ type FeedItem = {
   author?: string;
 };
 
-type Feed = {
+export type Feed = {
   feedUrl: string;
   title: string;
   description: string;
@@ -24,5 +22,5 @@ type Feed = {
 
 export type Data = {
   link: string;
-  Item: Item;
+  item: string;
 };
