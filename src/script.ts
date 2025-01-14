@@ -14,8 +14,8 @@ function dateParser(dateString: string) {
   return formattedDate;
 }
 
-export async function fetchRSSData(dataQueue: Queue<Data>) {
-  const response = await fetch("http://localhost:3000/rss-feed");
+export async function fetchRSSData(dataQueue: Queue<Data>, page: number) {
+  const response = await fetch(`http://localhost:3000/rss-feed/${page}`);
 
   if (!response.ok) {
     console.log("Failed to fetch RSS data", response.statusText);
